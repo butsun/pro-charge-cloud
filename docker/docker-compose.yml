@@ -49,13 +49,13 @@ services:
       - "7180:7180"
     volumes:
       # 证书映射
-      - /usr/local/omind/docker/nginx/cert:/etc/nginx/cert
+      - /opt/omind/docker/nginx/cert:/etc/nginx/cert
       # 配置文件映射
-      - /usr/local/omind/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /opt/omind/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       # 页面目录
-      - /usr/local/omind/docker/nginx/html:/usr/share/nginx/html
+      - /opt/omind/docker/nginx/html:/usr/share/nginx/html
       # 日志目录
-      - /usr/local/omind/docker/nginx/log:/var/log/nginx
+      - /opt/omind/docker/nginx/log:/var/log/nginx
     privileged: true
     networks:
       omind-net:
@@ -75,16 +75,16 @@ services:
       # root 密码
       MYSQL_ROOT_PASSWORD: omind2023
       # 初始化数据库
-      MYSQL_DATABASE: ruoyi-cloud
+      MYSQL_DATABASE: ry-cloud
     ports:
       - "3306:3306"
     volumes:
       # 数据挂载
-      - /usr/local/omind/docker/mysql/data/:/var/lib/mysql/
+      - /opt/omind/docker/mysql/data/:/var/lib/mysql/
       # 配置挂载
-      - /usr/local/omind/docker/mysql/conf/:/etc/mysql/conf.d/
+      - /opt/omind/docker/mysql/conf/:/etc/mysql/conf.d/
       # 初始化SQL
-      - /usr/local/omind/docker/mysql/init/:/docker-entrypoint-initdb.d/
+      - /opt/omind/docker/mysql/init/:/docker-entrypoint-initdb.d/
     command:
       # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
       --default-authentication-plugin=mysql_native_password
@@ -112,9 +112,9 @@ services:
       TZ: Asia/Shanghai
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/redis/conf/:/redis/config/
+      - /opt/omind/docker/redis/conf/:/redis/config/
       # 数据文件
-      - /usr/local/omind/docker/redis/data/:/redis/data/
+      - /opt/omind/docker/redis/data/:/redis/data/
     # command: "redis-server /redis/config/redis.conf"
     privileged: true
     networks:
@@ -136,7 +136,8 @@ services:
       # 时区上海
       PARAMS: "--spring.datasource.url=jdbc:mysql://172.25.0.5:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai  --spring.datasource.username=omind  --spring.datasource.password=omind2023"
     volumes:
-      - /usr/local/omind/docker/xxl-job/logs/:/data/applogs/xxl-job/
+      - /opt/omind/docker/xxl-job/logs/:/data/applogs/xxl-job/
+    privileged: true
     networks:
       omind-net:
         ipv4_address: 172.25.0.9
@@ -157,9 +158,10 @@ services:
       - "15672:15672" # 管理界面端口
       - "5672:5672"   # api 端口
     volumes:
-      - /usr/local/omind/docker/rabbitmq/log:/var/log/rabbitmq
-      - /usr/local/omind/docker/rabbitmq/data:/var/lib/rabbitmq
+      - /opt/omind/docker/rabbitmq/log:/var/log/rabbitmq
+      - /opt/omind/docker/rabbitmq/data:/var/lib/rabbitmq
     # command: /bin/bash -c "rabbitmq-plugins enable rabbitmq_management"
+    privileged: true
     networks:
       omind-net:
         ipv4_address: 172.25.0.11
@@ -198,9 +200,9 @@ services:
       MINIO_COMPRESS_MIME_TYPES: ""
     volumes:
       # 映射当前目录下的data目录至容器内/data目录
-      - /usr/local/omind/docker/minio/data:/data
+      - /opt/omind/docker/minio/data:/data
       # 映射配置目录
-      - /usr/local/omind/docker/minio/config:/root/.minio/
+      - /opt/omind/docker/minio/config:/root/.minio/
     command: server --address ':9000' --console-address ':9001' /data  # 指定容器中的目录 /data
     privileged: true
     networks:
@@ -235,9 +237,9 @@ services:
       JAVA_OPTS: "-Xms256m -Xmx512m"
     volumes:
       # 日志目录 注意集群模式下 日志目录不能一致 需要区分例如 nacos1 nacos2
-      - /usr/local/omind/docker/nacos/logs:/root/nacos/logs
+      - /opt/omind/docker/nacos/logs:/root/nacos/logs
       # 集群配置文件 集群所有nacos都必须使用此文件
-    #      - /usr/local/omind/docker/nacos/conf/cluster.conf:/root/nacos/conf/cluster.conf
+    #      - /opt/omind/docker/docker/nacos/conf/cluster.conf:/root/nacos/conf/cluster.conf
     networks:
       omind-net:
         ipv4_address: 172.25.0.18
@@ -257,9 +259,9 @@ services:
       - "8080:8080"
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/ruoyi-gateway/logs/:/ruoyi/gateway/logs
+      - /opt/omind/docker/ruoyi-gateway/logs/:/ruoyi/gateway/logs
       # skywalking 探针
-    #      - /usr/local/omind/docker/skywalking/agent/:/ruoyi/skywalking/agent
+    #      - /opt/omind/docker/docker/skywalking/agent/:/ruoyi/skywalking/agent
     privileged: true
     networks:
       omind-net:
@@ -280,7 +282,7 @@ services:
       - "9210:9210"
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/ruoyi-auth/logs/:/ruoyi/auth/logs
+      - /opt/omind/docker/ruoyi-auth/logs/:/ruoyi/auth/logs
       # skywalking 探针
     #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
     privileged: true
@@ -303,7 +305,7 @@ services:
       - "9201:9201"
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/ruoyi-system/logs/:/ruoyi/system/logs
+      - /opt/omind/docker/ruoyi-system/logs/:/ruoyi/system/logs
       # skywalking 探针
     #      - /Users/omind/Desktop/skywalking/agent/:/ruoyi/skywalking/agent
     privileged: true
@@ -326,7 +328,7 @@ services:
       - "9204:9204"
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/ruoyi-resource/logs/:/ruoyi/resource/logs
+      - /opt/omind/docker/ruoyi-resource/logs/:/ruoyi/resource/logs
       # skywalking 探针
     #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
     privileged: true
@@ -349,7 +351,7 @@ services:
       - "9801:9801"
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/omind-baseplat/logs/:/omind/baseplat/logs
+      - /opt/omind/docker/omind-baseplat/logs/:/omind/baseplat/logs
       # skywalking 探针
     #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
     privileged: true
@@ -372,7 +374,7 @@ services:
       - "9805:9805"
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/omind-userplat/logs/:/omind/userplat/logs
+      - /opt/omind/docker/omind-userplat/logs/:/omind/userplat/logs
       # skywalking 探针
     #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
     privileged: true
@@ -395,7 +397,7 @@ services:
       - "9804:9804"
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/omind-simplat/logs/:/omind/simplat/logs
+      - /opt/omind/docker/omind-simplat/logs/:/omind/simplat/logs
       # skywalking 探针
     #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
     privileged: true
@@ -418,7 +420,7 @@ services:
       - "9807:9807"
     volumes:
       # 配置文件
-      - /usr/local/omind/docker/omind-mp/logs/:/omind/mp/logs
+      - /opt/omind/docker/omind-mp/logs/:/omind/mp/logs
       # skywalking 探针
     #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
     privileged: true

@@ -14,6 +14,11 @@
  Date: 23/02/2024 11:45:31
 */
 
+-- 创建数据库，如果不存在
+CREATE DATABASE IF NOT EXISTS nacos DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+use nacos;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
